@@ -2,10 +2,11 @@ import React, { useState, useEffect } from 'react'
 import { Form, Button } from 'react-bootstrap'
 import { useDispatch } from 'react-redux'
 import './styles.css'
+import Axios from '../../services/api'
 // import { Container } from './styles';
 
 export default function Login () {
-  const [user, setUser] = useState('')
+  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const dispatch = useDispatch()
 
@@ -13,13 +14,15 @@ export default function Login () {
     console.log('Component Login')
   }, [])
 
-  function login (event) {
+  async function login (event) {
     event.preventDefault()
     dispatch({ type: 'isLoading', message: 'Autenticando...' })
-    console.log(user, password)
-    setTimeout(function () {
-      dispatch({ type: 'notLoading' })
-    }, 1000)
+    try {
+      const token = await Axios.post('user/authenticate', { email, password })
+      console.log(token)
+    } catch (err) {}
+
+    dispatch({ type: 'notLoading' })
   }
 
   return (
@@ -31,7 +34,7 @@ export default function Login () {
           <Form.Control
             type='email'
             placeholder='Enter email'
-            onChange={event => setUser(event.target.value)}
+            onChange={event => setEmail(event.target.value)}
           />
           <Form.Text className='text-muted'>
             We'll never share your email with anyone else.
