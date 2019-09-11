@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Form, Button } from 'react-bootstrap'
+import { Form, Button, Alert } from 'react-bootstrap'
 import { useDispatch } from 'react-redux'
 import './styles.css'
 import Axios from '../../services/api'
@@ -8,6 +8,7 @@ import Axios from '../../services/api'
 export default function Login () {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [alert, setAlert] = useState({ show: false })
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -16,18 +17,30 @@ export default function Login () {
 
   async function login (event) {
     event.preventDefault()
+    setAlert({ show: false })
     dispatch({ type: 'isLoading', message: 'Autenticando...' })
     try {
       const token = await Axios.post('user/authenticate', { email, password })
       console.log(token)
-    } catch (err) {}
+    } catch (err) {
+      // if (Array.isArray(err.response.data)) setAlert(err.response.data)
+      console.log(err.response.data)
+      setAlert({ show: true, variant: 'danger', ...err.response.data[0] })
+    }
 
     dispatch({ type: 'notLoading' })
   }
 
   return (
     <div className='login'>
-      <div />
+      <Alert
+        show={alert.show}
+        variant={alert.variant}
+        onClose={() => setAlert({ show: false })}
+        dismissible
+      >
+        <p>{alert.message}</p>
+      </Alert>
       <Form onSubmit={login}>
         <Form.Group controlId='formBasicEmail'>
           <Form.Label>Email address</Form.Label>
