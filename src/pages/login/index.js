@@ -1,27 +1,36 @@
 import React, { useState, useEffect } from 'react'
 import { Form, Button, Alert } from 'react-bootstrap'
 import { useDispatch } from 'react-redux'
+import isAuthenticated from '../../auth'
 import './styles.css'
 import Axios from '../../services/api'
 // import { Container } from './styles';
 
-export default function Login () {
+export default function Login (props) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [alert, setAlert] = useState({ show: false })
   const dispatch = useDispatch()
 
   useEffect(() => {
-    console.log('Component Login')
-  }, [])
+    redirectIfAuthenticated()
+  })
+
+  function redirectIfAuthenticated () {
+    if (isAuthenticated()) props.history.push('/home')
+  }
 
   async function login (event) {
     event.preventDefault()
     setAlert({ show: false })
     dispatch({ type: 'isLoading', message: 'Autenticando...' })
     try {
-      const token = await Axios.post('user/authenticate', { email, password })
-      console.log(token)
+      const { data: credentials } = await Axios.post('user/authenticate', {
+        email,
+        password
+      })
+      localStorage.setItem('credentials', JSON.stringify(credentials))
+      props.history.push('/home')
     } catch (err) {
       // if (Array.isArray(err.response.data)) setAlert(err.response.data)
       console.log(err.response.data)
