@@ -33,7 +33,7 @@ export default function Login (props) {
       props.history.push('/home')
     } catch (err) {
       // if (Array.isArray(err.response.data)) setAlert(err.response.data)
-      console.log(err.response.data)
+      // console.log(err.response.data)
       setAlert({ show: true, variant: 'danger', ...err.response.data[0] })
     }
 
