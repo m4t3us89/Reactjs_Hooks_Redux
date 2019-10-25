@@ -34,10 +34,14 @@ export default function Login (props) {
     } catch (err) {
       // if (Array.isArray(err.response.data)) setAlert(err.response.data)
       // console.log(err.response.data)
-      setAlert({ show: true, variant: 'danger', ...err.response.data[0] })
+      setAlert({
+        show: true,
+        variant: 'danger',
+        ...(err.response ? err.response.data[0] : { message: 'Erro' })
+      })
     }
 
-    dispatch({ type: 'notLoading' })
+    setTimeout(() => dispatch({ type: 'notLoading' }), 2000)
   }
 
   return (
