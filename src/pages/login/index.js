@@ -7,8 +7,8 @@ import Axios from '../../services/api'
 // import { Container } from './styles';
 
 export default function Login (props) {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const [email, setEmail] = useState('allissonmateus89@gmail.com')
+  const [password, setPassword] = useState('realmadri89')
   const [alert, setAlert] = useState({ show: false })
   const dispatch = useDispatch()
 
@@ -41,7 +41,8 @@ export default function Login (props) {
       })
     }
 
-    setTimeout(() => dispatch({ type: 'notLoading' }), 2000)
+    // setTimeout(() => dispatch({ type: 'notLoading' }), 2000)
+    dispatch({ type: 'notLoading' })
   }
 
   return (
@@ -61,6 +62,7 @@ export default function Login (props) {
             type='email'
             placeholder='Enter email'
             onChange={event => setEmail(event.target.value)}
+            value={email}
           />
           <Form.Text className='text-muted'>
             We'll never share your email with anyone else.
@@ -73,6 +75,7 @@ export default function Login (props) {
             type='password'
             placeholder='Password'
             onChange={event => setPassword(event.target.value)}
+            value={password}
           />
         </Form.Group>
         <Form.Group controlId='formBasicChecbox'>
