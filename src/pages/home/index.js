@@ -33,15 +33,30 @@ const columns = [
 ]
 
 export default function Home () {
+  function actionEdit () {
+    const selectedRows = JSON.parse(localStorage.getItem('selectedRows'))
+    const countRows = selectedRows.length
+    if (countRows === 0) alert('Selecione um item para editar')
+    else if (countRows > 1) alert('Selecione Apenas um item para editar')
+    else {
+      alert(`Ok, Editar. ${selectedRows[0].descricao}`)
+    }
+  }
+  function actionAdd () {
+    alert('Adicionar')
+  }
   return (
     <>
       <DatatableComponent
         columns={columns}
-        title={'Lista Todo'}
+        title='Todo'
         urlApi={{ list: '/todo', delete: '/todo/profile' }}
-        itemPerPage={10}
-        theme={'darkTheme'}
-        msgProgress={'Carregando TODO'}
+        itemPerPage='10'
+        theme='darkTheme'
+        msgProgress='Carregando TODO'
+        actions={[]}
+        actionEdit={actionEdit}
+        actionAdd={actionAdd}
       />
     </>
   )

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import Axios from '../../services/api'
 import { Button } from 'react-bootstrap'
+import { FaTrash, FaEdit, FaPlus } from 'react-icons/fa'
 import styled, { keyframes } from 'styled-components'
 import DataTable from 'react-data-table-component'
 
@@ -92,9 +93,12 @@ export default function DatatableComponent ({
   columns,
   title,
   urlApi,
-  itemPerPage,
-  theme,
-  msgProgress
+  itemPerPage = 10,
+  theme = 'rowTheme',
+  msgProgress = 'Loading',
+  actions = [],
+  actionEdit,
+  actionAdd
 }) {
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(false)
@@ -153,6 +157,7 @@ export default function DatatableComponent ({
 
   const handleRowSelected = useCallback(state => {
     setSelectedRows(state.selectedRows)
+    localStorage.setItem('selectedRows', JSON.stringify(state.selectedRows))
   }, [])
 
   const contextActions = useMemo(
@@ -176,17 +181,29 @@ export default function DatatableComponent ({
         }
       }
 
-      return (
+      return [
+        selectedRows.length === 1 && actionEdit ? (
+          <Button
+            variant='dark'
+            key='editar'
+            size='sm'
+            onClick={actionEdit}
+            style={{ marginRight: '5px' }}
+          >
+            <FaEdit />
+          </Button>
+        ) : null,
         <Button
-          variant='danger'
+          variant='dark'
           key='delete'
+          size='sm'
           onClick={handleDelete}
           // style={{ backgroundColor: 'red' }}
           // icon
         >
-          Delete
+          <FaTrash />
         </Button>
-      )
+      ]
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [data, selectedRows, toggleCleared]
@@ -219,6 +236,19 @@ export default function DatatableComponent ({
         progressPending={loading}
         progressComponent={<CustomLoader />}
         pagination
+        actions={[
+          actionAdd ? (
+            <Button
+              variant='outline-secondary'
+              key='adicionar'
+              size='sm'
+              onClick={actionAdd}
+            >
+              <FaPlus /> Adicionar
+            </Button>
+          ) : null,
+          ...actions
+        ]}
         paginationServer
         paginationTotalRows={totalRows}
         onChangeRowsPerPage={handlePerRowsChange}
